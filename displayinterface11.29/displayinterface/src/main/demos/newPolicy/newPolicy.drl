@@ -1,0 +1,9 @@
+rule "utilizationRate"
+    when
+        $utilization : UtilizationRate(rate <= 80)
+    then
+        new UnconstrainedAdaptiveRouting();
+        new BusinessSortingBasedonBandwidth();
+        new ResourceAllocation();
+
+end

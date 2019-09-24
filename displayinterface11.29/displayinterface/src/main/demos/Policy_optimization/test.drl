@@ -1,0 +1,11 @@
+rule:test new generation
+
+$d :drinkBottleSum);
+    then
+        $c.money=$m-1;
+        $c.emptyBottle=$e+1;
+        $c.drinkBottleSum=$d+1;
+        System.out.println($c.getName()+"wbh "+$c.getMoney()+"123 "+$c.getEmptyBottle()+" test"+$c.getDrinkBottleSum()+" file");
+        update($c);
+end
+

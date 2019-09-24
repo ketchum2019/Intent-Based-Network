@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <!--<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+
+    <!-- <meta name="author" content="上海酷利软件有限公司 Shanghai Kuli Software Co.,Ltd">-->
+    <meta name="keyword"
+          content="html5,canvas,javascript,拓扑图,流程图,组织图,网络图,矢量地图,思维导图,组件,开发包,ui,Diagramming,Library,Component, javascript">
+    <title>Intent based network</title>
+    <link rel="stylesheet" href="js/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="demo.css?v=2.6"/>
+    <script type="text/javascript" src="js/i18n.js?v=2.6.1.4"></script>
+    <script type="text/javascript" src="js/check-IE678.js?v=2.6.1.4"></script>
+
+    <script type="text/javascript" src="js/jquery/jquery.min.js?v=2.6.1.4"></script>
+    <script type="text/javascript" src="js/bootstrap/bootstrap.min.js?v=2.6.1.4"></script>
+
+
+</head>
+<body>
+
+<header id="header" class="navbar navbar-fixed-top">
+    <div id="navbar">
+        <!--<div class="navbar-header">
+            <div>
+                <a class="navbar-brand" href="http://qunee.com">
+                    <div class="logo" title="qunee.com"></div>
+                </a><span id="title">Light High Efficiency Graph Component</span>
+            </div>
+        </div>-->
+        <!--<div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right main_nav">
+                <li><a href="http://qunee.com">Home</a></li>
+                <li><a href="http://blog.qunee.com">Blog</a></li>
+                <li><a href="http://doc.qunee.com">Doc</a></li>
+                <li class="active"><a href="http://demo.qunee.com">Demo</a></li>
+                <li class="new"><a href="http://map.qunee.com/">Map</a></li>
+                <li><a href="http://demo.qunee.com/editor/">Editor</a></li>
+                <li><a href="http://demo.qunee.com/svg2canvas/">SVG2Canvas</a></li>
+            </ul>
+        </div>-->
+    </div>
+</header>
+<div id="page">
+    <div id="left_panel">
+        <div id="left_panel_top">
+            <div class="input-group input-group-sm" id="demo_search"></div>
+            <!--       <div class="q-sidebar" id="demo_list1" onclick="this.innerHTML='谢谢!'">运行所有示例</div>-->
+            <div class="q-sidebar" role="navigation" id="demo_list"></div>
+        </div>
+        <!--<div id="other_list">
+            <label>Online Demos</label>
+            <ul class="nav"></ul>
+            <script async src="./online-demos.js?v=2.6.1.4"></script>
+        </div>-->
+    </div>
+
+    <div id="right_panel">
+        <div>
+            <ol id="demo_title" class="breadcrumb" style="float: left">
+                <li class="active">Demos</li>
+            </ol>
+            <div title="About" id="about" style="float: right;visibility: hidden" class="btn btn-sm">About</div>
+            <div style="clear:both;"></div>
+        </div>
+
+
+        <div id="graph_panel" class="q-panel" style="display: block">
+            <div role="toolbar" class="q-toolbar">
+                <div>
+                    <div id="toolbar"></div>
+                    <div id="demo_menu" class="q-right">
+                        <div id="btnJSONShow" title="JSON Export" class="btn btn-default btn-sm">
+                            <div class="q-icon toolbar-json"></div>
+                        </div>
+                        <div id="btnOverview" title="Show Overview Panel" class="btn btn-default btn-sm">
+                            <div class="q-icon toolbar-overview"></div>
+                        </div>
+                        <div title="Maximize" id="maximize" class="btn btn-default btn-sm">
+                            <div class="q-icon toolbar-max"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="q-content">
+                <div id="canvas"></div>
+                <div id="overview"
+                     style="width: 150px;height: 120px;box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.2);position: absolute;right: 5px;top: 5px;background-color: #FFF;"></div>
+                <style>
+                    .Q-Export-JSON {
+                        position: absolute;
+                        top: 0px;
+                        bottom: 0px;
+                        right: 0px;
+                        left: 0px;
+                        background: #DDD;
+                        opacity: 0.9;
+                        box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+                    }
+                </style>
+                <div class="Q-Export-JSON" id="Q-JSON-Panel" style="height: 0px; overflow: hidden;">
+                    <div style="background: #EEE; position: absolute; top: 50px; bottom: 0px; width: 100%; overflow: auto;">
+                        <textarea id="json_code_panel" style="height: 100%; width: 100%; border: none;"></textarea>
+                    </div>
+                    <div style="padding: 10px; height: 50px; float: right; position: relative;">
+                        <div id="btnJSONSubmit" class="btn btn-primary btn-sm" title="Submit">Submit</div>
+                        <div id="btnJSONClose" class="btn btn-primary btn-sm" title="Close">Close</div>
+                    </div>
+                </div>
+                <div class="mask" id="mask_panel">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="show_list" class="q-panel" style="display: block">
+            <div class="list">
+                <span>输入意图：</span>&nbsp;&nbsp;
+                <input class="form-control" placeholder="输入意图" id="input1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-default" id="bt1">确定</button>
+            </div>
+            <div class="list">
+                <span>意图转译：</span>&nbsp;&nbsp;
+                <input class="form-control" placeholder="显示关键词" id="result1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-default" id="bt2">提取关键词</button>
+            </div>
+            <div class="list">
+                <span>执行策略：</span>&nbsp;&nbsp;
+                <input class="form-control" placeholder="显示被执行的策略" id="result2"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-default" id="bt3">选择策略</button>
+            </div>
+        </div>
+
+
+        <!--<div id="strategy_management" class="q-panel" style="display: block">
+
+            <div class="newtitle">Drools Import Rules and Facts</div>
+
+            <div class="table" >
+                <table id="table1" border="1" >
+                    <thead>
+                    <tr height="40px">
+                        <th>Rule name</th>
+                        <th>Modify</th>
+                        <th>Delete</th>
+                        <th>Fire</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr height="40px">
+                        <td width="550" id="row1">June 9th</td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt4">Modify</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt5">Delete</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt6">Fire</button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="550">June 10th</td>
+
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt7">Modify</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt8">Delete</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt9">Fire</button>
+                        </td>
+                    </tr>
+
+
+
+                    <tr height="40px">
+                        <td width="550">June 9th</td>
+
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt10">Modify</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt11">Delete</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt12">Fire</button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="550">June 10th</td>
+
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt13">Modify</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt14">Delete</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt15">Fire</button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="550">June 9th</td>
+
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt16">Modify</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt17">Delete</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt18">Fire</button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="550">June 10th</td>
+
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt19">Modify</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt20">Delete</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt21">Fire</button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="550">June 9th</td>
+
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt22">Modify</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt23">Delete</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt24">Fire</button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="550">June 10th</td>
+
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt25">Modify</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt26">Delete</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt27">Fire</button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="550">June 9th</td>
+
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt28">Modify</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt29">Delete</button>
+                        </td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default" id="bt30">Fire</button>
+                        </td>
+                    </tr>
+
+
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+
+            <div >
+                <button style="margin-top: -200px;margin-left:950px" type="button" class="btn btn-default" id="bt31">Show All Rules</button>
+                <button style="margin-top: -150px;margin-left:950px" type="button" class="btn btn-default" id="bt32">Insert Rule</button>
+            </div>
+
+            <div>
+                <span class="span1">Rule Name：</span><br><br>
+                <input placeholder="rule name"  id="input2"><br><br>
+            </div>
+
+
+            <div class="span2">
+                <!--<span>Select Rule：</span><br><br>
+                <span>
+                   <button type="button" class="btn btn-default" id="bt33">Choose File</button>
+                    <input placeholder="show rule"  id="input3"><br><br>
+                    <button type="button" class="btn btn-default" id="bt34">Preview Rule</button>
+                </span>
+            </div>
+
+
+            <div class="area1">
+                <span>Rule to Load: </span><br><br>
+                <!--<textarea id="test1" type="text" style="width:500px; height:400px;"  readonly="ture"></textarea><br><br>
+                <textarea id="input4" style="width:500px; height:400px;"></textarea><br><br>
+                <button type="button" class="btn btn-default" id="bt36">Commit changes</button><br><br>
+            </div>
+            <div class="area2">
+                <span>Rule to Edit: </span><br><br>
+                <textarea id="input5" style="width:500px; height:400px;"></textarea><br><br>
+                <button type="button" class="btn btn-default" id="bt35">Import Rule to Drools Engine</button><br><br>
+            </div>
+
+        </div>-->
+
+
+        <div id="policy_optimization" class="q-panel" style="display:block">
+            <div class="newtitle">Policy Optimization</div>
+
+            <div class="table">
+                <table id="table1" border="1">
+                    <thead>
+                    <tr height="40px">
+                        <th>Rule name</th>
+                        <th>Rule logo</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr height="40px">
+                        <td width="300" id="row1">First Fit</td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default"
+                                    style="position:absolute;top:166px;left: 365px" id="First Fit">A
+                            </button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="300">Shortest path</td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default"
+                                    style="position:absolute;top:206px;left: 365px" id="Shortest path">B
+                            </button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="300">Shortest Path with Options</td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default"
+                                    style="position:absolute;top:246px;left: 365px" id="Shortest Path with Options">C
+                            </button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="300">Dynamic routing</td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default"
+                                    style="position:absolute;top:286px;left: 365px" id="Dynamic routing">D
+                            </button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="300">Constrained adaptive routing</td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default"
+                                    style="position:absolute;top:326px;left: 365px" id="Constrained adaptive routing">E
+                            </button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="300">Unconstrained adaptive routing</td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default"
+                                    style="position:absolute;top:366px;left: 365px" id="Unconstrained adaptive routing">
+                                F
+                            </button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="300">Business sorting based on bandwidth</td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default"
+                                    style="position:absolute;top:406px;left: 365px"
+                                    id="Business sorting based on bandwidth">G
+                            </button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="300">Business sorting based route</td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default"
+                                    style="position:absolute;top:446px;left: 365px" id="Business sorting based route">H
+                            </button>
+                        </td>
+                    </tr>
+                    <tr height="40px">
+                        <td width="300">Bandwidth allocation</td>
+                        <td width="100">
+                            <button type="button" class="btn btn-default"
+                                    style="position:absolute;top:486px;left: 365px" id="Bandwidth allocation">I
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="area1">
+                <span>Generate a new Rule</span><br><br>
+                <textarea id="input4" style="width:400px; height:400px;"></textarea><br><br>
+                <button type="button" class="btn btn-default" id="bt12">policy optimization</button>
+                <br><br>
+            </div>
+
+
+        </div>
+
+
+    </div>
+</div>
+<div style="clear:both;"></div>
+<!--<footer id="footer" role="contentinfo">
+    <div>
+        Copyright © 2018 上海酷利软件有限公司 Shanghai Kuli Software Co.,Ltd. All right reserved. Email: <span
+            style="color: #2898E0;">support#qunee.com</span>
+    </div>
+</footer>-->
+<div style="clear:both;"></div>
+<div class="modal fade" id="q-message">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Title</h4>
+            </div>
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="./lib/qunee-min.js?v=2.6.1.4?"></script>
+<!--<script type="text/javascript" src="../qunee.js?v=2.6.0.5"></script>-->
+<script type="text/javascript" src="js/common.js?v=2.6.1.4"></script>
+<script type="text/javascript" src="js/graphs.js?v=2.6.1.4"></script>
+<script type="text/javascript" src="js/demo.js?v=2.6.1.4"></script>
+
+<link rel="stylesheet" href="js/codemirror/codemirror.css">
+<script src="js/codemirror/codemirror.js?v=2.6.1.4"></script>
+<script src="js/codemirror/javascript.js?v=2.6.1.4"></script>
+<!--<script>
+    var code_panel = document.getElementById("code_panel");
+    var editor = CodeMirror.fromTextArea(code_panel, {
+        lineNumbers: true,
+        matchBrackets: true,
+        mode: "text/javascript"
+    });
+    code_panel.getValue = function () {
+        return editor.getValue();
+    }
+    code_panel.setValue = function (v) {
+        editor.setValue(v);
+    }
+    code_panel.setValue(code_panel.value);
+    code_panel.editor = editor;
+</script>-->
+</body>
+<script>
+    //    window.LIMITED_SIZE = 1000000;
+    if (window.location.hostname != 'localhost') {
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-48136854-1', 'qunee.com');
+        ga('send', 'pageview');
+    }
+    // function displayDate()
+    // {
+    //     document.getElementById("demo").innerHTML=Date();
+    // }
+</script>
+</html> 
